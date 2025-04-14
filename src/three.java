@@ -4,6 +4,8 @@ import net.lingala.zip4j.exception.*;
 import java.util.ArrayList;
 
 public class three{
+    
+
     public three (String fileName,ArrayList<String> pass){
        
         for (String string : pass) {
@@ -21,14 +23,7 @@ public class three{
 		}
     }
 }
-    public static void main(String[] args){
-        long starttime=System.currentTimeMillis();
-        ArrayList<String> pass = new ArrayList<>() ;   
-        pass=passwordMaker(pass);
-        new three("protected3.zip",pass);
-        System.out.println(System.currentTimeMillis()-starttime);
-        
-    }
+    
     public static ArrayList<String> passwordMaker(ArrayList<String> arr){
         String password="";
         for(char ind1='a';ind1<='z';ind1++){
