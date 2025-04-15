@@ -6,19 +6,22 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class five {
     private String fileName;
     private static ArrayList<String> pass5;
     private int numThreads;
     private static volatile boolean found = false;
 
+    @SuppressWarnings("static-access")
     public five(String fileName, ArrayList<String> pass5, int numThreads) {
         this.fileName = fileName;
         this.pass5 = pass5;
         this.numThreads = numThreads;
 
     }
-    static class passwordTest implements Runnable{
+
+    static class passwordTest implements Runnable {
         private String fileName;
         private List<String> passChunk;
 
@@ -26,28 +29,44 @@ public class five {
             this.fileName = fileName;
             this.passChunk = passChunk;
         }
+
         @Override
-        public void run(){
-        for (String string : pass5) {
-            try {
-            ZipFile zipFile = new ZipFile(fileName);
-            zipFile.setPassword(string);
-            zipFile.extractAll("contents1");
-            System.out.println("Successfully cracked!"+string);
-            found=true;
-            break;
+        public void run() {
             
-        } catch (ZipException ze) {
-            System.out.println("Incorrect password :(");
-        } catch (Exception e){
-            e.printStackTrace();
+            if (found) {
+                System.out.println(found);
+                return; // Another thread already found it
+            }
+            for (String string : passChunk) {
+                if (string.equals("iamio")) {
+                    return;
+                }
+                try {
+                    ZipFile zipFile = new ZipFile(fileName);
+                    zipFile.setPassword(string);
+                    zipFile.extractAll("contents1");
+                    System.out.println("Successfully cracked!" + string);
+                    found = true;
+                    break;
+
+                } catch (ZipException ze) {
+                    System.out.println("Incorrect password :("+string);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
-    }}}
-    
+    }
 
     public void threadMaker() throws Exception {
-         String threadZip = "temp_copy_" + Thread.currentThread().getId() + ".zip";
-        Files.copy(Path.of(fileName), Path.of(threadZip));
+
+        // // String threadZip = "temp_copy_" + Thread.currentThread().threadId() + ".zip";
+        // // Files.copy(Path.of(fileName), Path.of(threadZip));
+        // Path threadPath = Path.of(threadZip);
+        // if (Files.exists(threadPath)) {
+        //     Files.delete(threadPath);
+        // }
+        // Files.copy(Path.of(fileName), threadPath);
         int chunkSize = (int) Math.ceil(pass5.size() / (double) numThreads);
         List<Thread> threads = new ArrayList<>();
 
@@ -56,7 +75,14 @@ public class five {
             int end = Math.min(start + chunkSize, pass5.size());
 
             List<String> passChunk = pass5.subList(start, end);
-            Thread thread = new Thread(new passwordTest(fileName, passChunk));
+            String threadZip = "temp_copy_" + i + ".zip";
+            Path threadPath = Path.of(threadZip);
+
+            if (Files.exists(threadPath)) {
+                Files.delete(threadPath);
+            }
+            Files.copy(Path.of(fileName), threadPath);
+            Thread thread = new Thread(new passwordTest(threadZip, passChunk));
             threads.add(thread);
             thread.start();
         }
@@ -72,7 +98,13 @@ public class five {
         if (!found) {
             System.out.println("Password not found.");
         }
-        Files.delete(Path.of(threadZip));
+        for (int i = 0; i < numThreads; i++) {
+            String threadZip = "temp_copy_" + i + ".zip";
+            Path threadPath = Path.of(threadZip);
+            if (Files.exists(threadPath)) {
+                Files.delete(threadPath);
+            }
+        }
     }
 
     public static ArrayList<String> passwordMaker(ArrayList<String> pass5) {

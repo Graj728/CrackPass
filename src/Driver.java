@@ -8,11 +8,14 @@ public class Driver {
         int numThreads=new Scanner(System.in).nextInt();
         long starttime=System.currentTimeMillis();
 
-        // ArrayList<String> pass = new ArrayList<>() ;   
+        ArrayList<String> pass = new ArrayList<>() ;   
         ArrayList<String> pass5 = new ArrayList<>() ;
-        // pass=three.passwordMaker(pass);
+        pass=three.passwordMaker(pass);
         pass5=five.passwordMaker(pass5);
         // new three("protected3.zip",pass);
+        String password3digit=three.getPassword();
+        System.out.println(password3digit);
+        // System.out.println("Time to crack 3 digit password" + (System.currentTimeMillis()-starttime));
         try {
             five passwordCrack = new five("protected5.zip", pass5, numThreads);
             passwordCrack.threadMaker(); 
@@ -20,7 +23,7 @@ public class Driver {
             e.printStackTrace();
         }
         
-        System.out.println(System.currentTimeMillis()-starttime);
+        System.out.println("Time to crack 5 digits password"+(System.currentTimeMillis()-starttime));
         
         
     }
