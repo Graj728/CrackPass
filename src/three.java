@@ -21,7 +21,7 @@ public class three{
             break;
             
 		} catch (ZipException ze) {
-			System.out.println("Incorrect password :(");
+			// System.out.println("Incorrect password :(");
 		} catch (Exception e){
 			e.printStackTrace();
 		}

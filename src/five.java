@@ -33,24 +33,24 @@ public class five {
         @Override
         public void run() {
             
-            if (found) {
-                System.out.println(found);
-                return; // Another thread already found it
-            }
+            
             for (String string : passChunk) {
-                if (string.equals("iamio")) {
-                    return;
+                
+                if (found) {
+                    System.out.println(found);
+                    return; 
                 }
                 try {
                     ZipFile zipFile = new ZipFile(fileName);
                     zipFile.setPassword(string);
                     zipFile.extractAll("contents1");
+                    
                     System.out.println("Successfully cracked!" + string);
-                    found = true;
+                    found = true;   
                     break;
 
                 } catch (ZipException ze) {
-                    System.out.println("Incorrect password :("+string);
+                    // System.out.println("Incorrect password :("+string);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -60,13 +60,7 @@ public class five {
 
     public void threadMaker() throws Exception {
 
-        // // String threadZip = "temp_copy_" + Thread.currentThread().threadId() + ".zip";
-        // // Files.copy(Path.of(fileName), Path.of(threadZip));
-        // Path threadPath = Path.of(threadZip);
-        // if (Files.exists(threadPath)) {
-        //     Files.delete(threadPath);
-        // }
-        // Files.copy(Path.of(fileName), threadPath);
+       
         int chunkSize = (int) Math.ceil(pass5.size() / (double) numThreads);
         List<Thread> threads = new ArrayList<>();
 
@@ -89,7 +83,7 @@ public class five {
 
         for (Thread thread : threads) {
             try {
-                thread.join(); // Wait for all threads to complete
+                thread.join(); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -115,6 +109,7 @@ public class five {
                     for (char in4 = 'a'; in4 <= 'z'; in4++) {
                         for (char in5 = 'a'; in5 <= 'z'; in5++) {
                             password = "" + in1 + in2 + in3 + in4 + in5;
+                           
                             pass5.add(password);
                         }
                     }
