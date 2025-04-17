@@ -1,11 +1,11 @@
 import net.lingala.zip4j.core.*;
 import net.lingala.zip4j.exception.*;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class five {
     private String fileName;
@@ -24,29 +24,37 @@ public class five {
     static class passwordTest implements Runnable {
         private String fileName;
         private List<String> passChunk;
+        // private long id;
+        private String contents;
 
-        public passwordTest(String fileName, List<String> passChunk) {
+        public passwordTest(String fileName, List<String> passChunk, String contents) {
             this.fileName = fileName;
             this.passChunk = passChunk;
+
+            this.contents = contents;
+            File dir = new File(contents);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
         }
 
         @Override
         public void run() {
-            
-            
+
             for (String string : passChunk) {
-                
+
                 if (found) {
                     System.out.println(found);
-                    return; 
+                    return;
                 }
                 try {
                     ZipFile zipFile = new ZipFile(fileName);
                     zipFile.setPassword(string);
-                    zipFile.extractAll("contents1");
-                    
+                    zipFile.extractAll(contents);
+
                     System.out.println("Successfully cracked!" + string);
-                    found = true;   
+                    found = true;
                     break;
 
                 } catch (ZipException ze) {
@@ -60,9 +68,9 @@ public class five {
 
     public void threadMaker() throws Exception {
 
-       
         int chunkSize = (int) Math.ceil(pass5.size() / (double) numThreads);
         List<Thread> threads = new ArrayList<>();
+        List<String> cont = new ArrayList<>();
 
         for (int i = 0; i < numThreads; i++) {
             int start = i * chunkSize;
@@ -70,20 +78,25 @@ public class five {
 
             List<String> passChunk = pass5.subList(start, end);
             String threadZip = "temp_copy_" + i + ".zip";
+            String extractF = "content" + i;
+            Path extrPath = Path.of(extractF);
             Path threadPath = Path.of(threadZip);
+            if (Files.exists(extrPath)) {
+                Files.delete(extrPath);
+            }
 
             if (Files.exists(threadPath)) {
                 Files.delete(threadPath);
             }
             Files.copy(Path.of(fileName), threadPath);
-            Thread thread = new Thread(new passwordTest(threadZip, passChunk));
+            Thread thread = new Thread(new passwordTest(threadZip, passChunk, extractF));
             threads.add(thread);
             thread.start();
         }
 
         for (Thread thread : threads) {
             try {
-                thread.join(); 
+                thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -109,7 +122,7 @@ public class five {
                     for (char in4 = 'a'; in4 <= 'z'; in4++) {
                         for (char in5 = 'a'; in5 <= 'z'; in5++) {
                             password = "" + in1 + in2 + in3 + in4 + in5;
-                           
+
                             pass5.add(password);
                         }
                     }
