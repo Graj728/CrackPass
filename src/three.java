@@ -3,52 +3,63 @@ import net.lingala.zip4j.exception.*;
 
 import java.util.ArrayList;
 
-public class three{
-    public static String password="";
-    public static boolean pfound=false;
+public class three {
+    public static String password = "";
+    public static boolean pfound = false;
 
-    public three (String fileName,ArrayList<String> pass){
-       
+    /**
+     * constructor for three class
+     * 
+     * @param fileName takes the filename to crack
+     * @param pass     takes arraylist of password
+     */
+    public three(String fileName, ArrayList<String> pass) {
+
         for (String string : pass) {
             try {
-			ZipFile zipFile = new ZipFile(fileName);
-			zipFile.setPassword(string);
-			zipFile.extractAll("contents");
-            pfound=true;
-            password=string;
-			System.out.println("Successfully cracked!"+string);
-            
-            break;
-            
-		} catch (ZipException ze) {
-			// System.out.println("Incorrect password :(");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+                ZipFile zipFile = new ZipFile(fileName);
+                zipFile.setPassword(string);
+                zipFile.extractAll("contents");
+                pfound = true;
+                password = string;
+                System.out.println("Successfully cracked!" + string);
+
+                break;
+
+            } catch (ZipException ze) {
+                // System.out.println("Incorrect password :(");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
-}
-public static String getPassword(){
-    String password3="";
-if (pfound) {
-    password3=password;
-}
-return password3;
-}
-    
-    public static ArrayList<String> passwordMaker(ArrayList<String> arr){
-        String password="";
-        for(char ind1='a';ind1<='z';ind1++){
-            for(char ind2='a';ind2<='z';ind2++){
-                for(char ind3='a';ind3<='z';ind3++){
-                    password=""+ind1+ind2+ind3;
+
+    public static String getPassword() {
+        String password3 = "";
+        if (pfound) {
+            password3 = password;
+        }
+        return password3;
+    }
+
+    /**
+     * method to create password of 3digit
+     * 
+     * @param arr takes an arraylist to store password
+     * @return arraylist with password stored
+     */
+    public static ArrayList<String> passwordMaker(ArrayList<String> arr) {
+        String password = "";
+        for (char ind1 = 'a'; ind1 <= 'z'; ind1++) {
+            for (char ind2 = 'a'; ind2 <= 'z'; ind2++) {
+                for (char ind3 = 'a'; ind3 <= 'z'; ind3++) {
+                    password = "" + ind1 + ind2 + ind3;
                     arr.add(password);
-                    
-                    
-                    
+
                 }
             }
         }
-        
+
         return arr;
     }
 }
