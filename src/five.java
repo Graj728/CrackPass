@@ -81,8 +81,12 @@ public class five {
             String extractF = "content" + i;
             Path extrPath = Path.of(extractF);
             Path threadPath = Path.of(threadZip);
+            try{
             if (Files.exists(extrPath)) {
                 Files.delete(extrPath);
+            }}
+            catch(Exception cnd){
+
             }
 
             if (Files.exists(threadPath)) {
@@ -122,7 +126,7 @@ public class five {
                     for (char in4 = 'a'; in4 <= 'z'; in4++) {
                         for (char in5 = 'a'; in5 <= 'z'; in5++) {
                             password = "" + in1 + in2 + in3 + in4 + in5;
-
+                            
                             pass5.add(password);
                         }
                     }
