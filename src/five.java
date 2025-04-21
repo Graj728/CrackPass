@@ -2,6 +2,8 @@ import net.lingala.zip4j.core.*;
 import net.lingala.zip4j.exception.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class five {
     private static ArrayList<String> pass5;
     private int numThreads;
     private static volatile boolean found = false;
+    static long id;
 
     /**
      * constructor for class five
@@ -32,7 +35,7 @@ public class five {
                                                    // chatgpt
         private String fileName;
         private List<String> chunkPass;
-
+        private long id_thread;
         private String contents;
 
         /**
@@ -42,10 +45,10 @@ public class five {
          * @param chunkPass takes the password divided into chunks
          * @param contents  takes the name of folder
          */
-        public passwordTest(String fileName, List<String> chunkPass, String contents) {
+        public passwordTest(String fileName, List<String> chunkPass, String contents,long id_Thread) {
             this.fileName = fileName;
             this.chunkPass = chunkPass;
-
+            this.id_thread=id_Thread;
             this.contents = contents;
             File dir = new File(contents);
             if (!dir.exists()) {
@@ -74,6 +77,7 @@ public class five {
 
                     System.out.println("Successfully cracked!" + string);
                     found = true;
+                    id=id_thread;
                     break;
 
                 } catch (ZipException ze) {
@@ -124,7 +128,7 @@ public class five {
                 Files.delete(threadPath);
             }
             Files.copy(Path.of(fileName), threadPath);
-            Thread thread = new Thread(new passwordTest(threadZip, chunkPass, extractF));// calls the passwordTest
+            Thread thread = new Thread(new passwordTest(threadZip, chunkPass, extractF,Thread.currentThread().threadId()));// calls the passwordTest
                                                                                          // method
             threads.add(thread);
             thread.start();
@@ -148,6 +152,24 @@ public class five {
                 Files.delete(threadPath);
             }
         }
+        for (int cnt = 0; cnt < numThreads; cnt++) {//loop for deleting the folders created with some ideas from Clarissa Oracle and google search
+            if(cnt==id){
+                continue;
+            }
+            String extraF="content"+cnt;
+            Path extrPath=Path.of(extraF);
+            if (Files.exists(extrPath) && Files.isDirectory(extrPath)) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(extrPath)) {
+                    for (Path file : stream) {
+                        Files.deleteIfExists(file); // delete the single file
+                    }
+                    Files.deleteIfExists(extrPath); // delete the directory after the file
+                    
+                } catch (IOException e) {
+                    System.err.println("Error deleting " + extrPath + ": " + e.getMessage());
+                }
+            }
+        }
     }
 
     /**
@@ -164,8 +186,8 @@ public class five {
                     for (char in4 = 'a'; in4 <= 'z'; in4++) {
                         for (char in5 = 'a'; in5 <= 'z'; in5++) {
                             password = "" + in1 + in2 + in3 + in4 + in5;
-
-                            pass5.add(password);
+                            
+                            pass5.add(password);   
                         }
                     }
                 }
