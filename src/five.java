@@ -14,7 +14,7 @@ public class five {
     private static ArrayList<String> pass5;
     private int numThreads;
     private static volatile boolean found = false;
-    static long id;
+    static int id;
 
     /**
      * constructor for class five
@@ -35,7 +35,7 @@ public class five {
                                                    // chatgpt
         private String fileName;
         private List<String> chunkPass;
-        private long id_thread;
+        private int id_thread;
         private String contents;
 
         /**
@@ -45,7 +45,7 @@ public class five {
          * @param chunkPass takes the password divided into chunks
          * @param contents  takes the name of folder
          */
-        public passwordTest(String fileName, List<String> chunkPass, String contents,long id_Thread) {
+        public passwordTest(String fileName, List<String> chunkPass, String contents,int id_Thread) {
             this.fileName = fileName;
             this.chunkPass = chunkPass;
             this.id_thread=id_Thread;
@@ -128,7 +128,7 @@ public class five {
                 Files.delete(threadPath);
             }
             Files.copy(Path.of(fileName), threadPath);
-            Thread thread = new Thread(new passwordTest(threadZip, chunkPass, extractF,Thread.currentThread().threadId()));// calls the passwordTest
+            Thread thread = new Thread(new passwordTest(threadZip, chunkPass, extractF,i));// calls the passwordTest
                                                                                          // method
             threads.add(thread);
             thread.start();
