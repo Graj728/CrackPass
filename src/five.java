@@ -31,7 +31,7 @@ public class five {
 
     }
 
-    static class passwordTest implements Runnable {// I have taken the concept of static class from google search and
+    static class passwordTest implements Runnable {// I have taken the concept of static class from google search Gemini and
                                                    // chatgpt
         private String fileName;
         private List<String> chunkPass;
@@ -70,7 +70,7 @@ public class five {
 
                     return;
                 }
-                try {
+                try {/*this code was taken from example */
                     ZipFile zipFile = new ZipFile(fileName);
                     zipFile.setPassword(string);
                     zipFile.extractAll(contents);
@@ -127,7 +127,7 @@ public class five {
                                             */
                 Files.delete(threadPath);
             }
-            Files.copy(Path.of(fileName), threadPath);
+            Files.copy(Path.of(fileName), threadPath);//created from chatgpt
             Thread thread = new Thread(new passwordTest(threadZip, chunkPass, extractF,i));// calls the passwordTest
                                                                                          // method
             threads.add(thread);
@@ -138,21 +138,22 @@ public class five {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                e.printStackTrace();//created with help from chatgpt
             }
         }
 
         if (!found) {
             System.out.println("Password not found.");
         }
-        for (int i = 0; i < numThreads; i++) {/* deletes the temporary zipfile */
+        for (int i = 0; i < numThreads; i++) {/* deletes the temporary zipfile created from chatgpt */
             String threadZip = "temp_copy_" + i + ".zip";
             Path threadPath = Path.of(threadZip);
             if (Files.exists(threadPath)) {
                 Files.delete(threadPath);
             }
+            //end of loop created from chatgpt
         }
-        for (int cnt = 0; cnt < numThreads; cnt++) {//loop for deleting the folders created with some ideas from Clarissa Oracle and google search
+        for (int cnt = 0; cnt < numThreads; cnt++) {//loop for deleting the folders created with some ideas from Clarissa Oracle and google search geminiand chatgpt
             if(cnt==id){
                 continue;
             }
@@ -168,7 +169,7 @@ public class five {
                 } catch (IOException e) {
                     System.err.println("Error deleting " + extrPath + ": " + e.getMessage());
                 }
-            }
+            }//end of loop for file deletion created form chatgpt and google gemini
         }
     }
 
