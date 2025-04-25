@@ -1,4 +1,5 @@
 //time to crack the 5 digit password using 3 threads=8621221 and using 4 threads =10226697
+//the directory contents has the message from protected3 and the directory content ending with a number has the message from protected5
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -22,6 +23,7 @@ public class Driver {
                                                                                                             * digit
                                                                                                             * zipfile
                                                                                                             */
+        starttime=System.currentTimeMillis();
         try {
             five passwordCrack = new five("protected5.zip", pass5, numThreads);/* executes the 5 digit file */
             passwordCrack.threadMaker();/* calls the threadmaker */
